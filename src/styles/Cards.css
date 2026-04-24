@@ -1,0 +1,70 @@
+.dashboard-card {
+  min-height: 285px;
+  border: 1.5px solid #c7ceff;
+  border-radius: 4px;
+  padding: 22px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.card-header p {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+}
+
+.card-header h2 {
+  margin-top: 12px;
+  font-size: 27px;
+  color: #278cff;
+  font-weight: 500;
+}
+
+.card-header span {
+  display: block;
+  margin-top: 6px;
+  color: #ffffff;
+  font-size: 13px;
+}
+
+.card-header select {
+  background: transparent;
+  color: white;
+  border: none;
+  outline: none;
+  font-size: 11px;
+}
+
+.card-content {
+  margin-top: 18px;
+}
+
+.album-card {
+  min-width: 0;
+}
+
+.album-card img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  margin-bottom: 12px;
+}
+
+.album-card h4 {
+  font-size: 12px;
+  font-weight: 800;
+  color: white;
+  line-height: 1.2;
+}
+
+.album-card p {
+  font-size: 11px;
+  color: #d6daf6;
+  margin-top: 4px;
+}

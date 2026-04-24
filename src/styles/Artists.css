@@ -1,0 +1,140 @@
+.artists-page {
+  width: 100%;
+  height: 100vh;
+  background: #3b456b;
+  font-family: "Poppins", "Montserrat", sans-serif;
+}
+
+.artists-wrapper {
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+}
+
+.artists-main {
+  background: #151832;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.artists-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 30px 40px;
+}
+
+.artists-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.artists-header h1 {
+  color: #ffffff;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.artists-header p {
+  color: #b9bdd8;
+  margin-top: 6px;
+  font-size: 14px;
+}
+
+.btn-add {
+  background: #8c9cff;
+  color: #ffffff;
+  border: none;
+  padding: 11px 18px;
+  border-radius: 8px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.artists-grid {
+  margin-top: 32px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 24px;
+}
+
+.artist-card {
+  background: #1b2142;
+  border: 1px solid rgba(140, 156, 255, 0.22);
+  border-radius: 16px;
+  padding: 22px 16px;
+  text-align: center;
+  transition: 0.2s ease;
+}
+
+.artist-card:hover {
+  transform: translateY(-5px);
+  border-color: #8c9cff;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.25);
+}
+
+.artist-card img {
+  width: 124px;
+  height: 124px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto 16px;
+  border: 3px solid #8c9cff;
+}
+
+.artist-info h3 {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.artist-info p {
+  color: #b9bdd8;
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+.artist-meta {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  color: #8c9cff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.artist-actions {
+  margin-top: 18px;
+  display: flex;
+  gap: 10px;
+}
+
+.btn-view,
+.btn-edit {
+  flex: 1;
+  border: none;
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.btn-view {
+  background: #2f3a6a;
+  color: white;
+}
+
+.btn-edit {
+  background: #8c9cff;
+  color: white;
+}
+
+@media (max-width: 1200px) {
+  .artists-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
