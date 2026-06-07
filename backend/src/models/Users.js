@@ -24,8 +24,8 @@ const usersSchema = new Schema(
     role: {
       type: String,
       required: true,
-      enum: ["Admin", "Customer", "Employee"],
-      default: "Customer"
+      enum: ["admin", "customer"],
+      default: "customer"
     },
 
     phone: {
@@ -35,19 +35,19 @@ const usersSchema = new Schema(
     },
 
     registrationDate: {
-      type: String,
-      default: () => new Date().toISOString().split("T")[0]
+      type: Date,
+      default: Date.now
     },
 
-    userImg: {
+    imageURL: {
       type: String,
       default: ""
     },
 
     status: {
       type: String,
-      enum: ["Activo", "Inactivo"],
-      default: "Activo"
+      enum: ["active", "inactive"],
+      default: "active"
     }
   },
   {
