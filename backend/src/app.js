@@ -7,15 +7,19 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors({
-  origin: "http://localhost:5173",
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true
+  })
+);
 
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.json({ message: "Backend funcionando correctamente" });
+  res.status(200).json({
+    message: "Backend funcionando correctamente"
+  });
 });
 
 app.use("/api/users", usersRoutes);
