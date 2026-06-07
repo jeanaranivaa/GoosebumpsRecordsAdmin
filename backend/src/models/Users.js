@@ -5,7 +5,7 @@ const usersSchema = new Schema(
     fullName: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
 
     email: {
@@ -13,45 +13,50 @@ const usersSchema = new Schema(
       required: true,
       trim: true,
       lowercase: true,
-      unique: true
+      unique: true,
     },
 
     password: {
       type: String,
-      required: true
+      required: true,
     },
 
     role: {
       type: String,
       required: true,
       enum: ["admin", "customer"],
-      default: "customer"
+      default: "customer",
     },
 
     phone: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
 
     registrationDate: {
       type: Date,
-      default: Date.now
+      default: Date.now,
     },
 
     imageURL: {
       type: String,
-      default: ""
+      default: "",
+    },
+
+    public_id: {
+      type: String,
+      default: "",
     },
 
     status: {
       type: String,
       enum: ["active", "inactive"],
-      default: "active"
-    }
+      default: "active",
+    },
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
 
