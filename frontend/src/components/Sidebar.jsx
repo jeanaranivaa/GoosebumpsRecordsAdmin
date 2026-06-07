@@ -36,22 +36,20 @@ export default function Sidebar() {
       path: "/orders",
     },
     {
-      name: "Clientes",
+      name: "Usuarios",
       icon: <Users size={20} />,
-      path: "/customers",
+      path: "/users",
     },
   ];
 
   return (
     <aside className="sidebar">
-      {/* Usuario */}
       <div className="sidebar-user">
         <img src={userImg} alt="Usuario" />
         <h3>Jeancarlo Araniva</h3>
         <p>Administrador</p>
       </div>
 
-      {/* Menú */}
       <nav className="sidebar-menu">
         {menuItems.map((item) => {
           const isActive = location.pathname === item.path;
