@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import DashboardPage from "./pages/DashboardPage";
 import VinylsPage from "./pages/VinylsPage";
-import ArtistsPage from "./pages/ArtistsPage";
 import OrdersPage from "./pages/OrdersPage";
 import UsersPage from "./pages/UsersPage";
 import LoginPage from "./pages/LoginPage";
@@ -10,6 +9,7 @@ import SignUpPage from "./pages/SignUpPage";
 import PasswordRecoveryPage from "./pages/PasswordRecoveryPage";
 import VerifyCodePage from "./pages/VerifyCodePage";
 import NewPasswordPage from "./pages/NewPasswordPage";
+import PaymentsPage from "./pages/PaymentsPage";
 
 export default function App() {
   return (
@@ -25,9 +25,9 @@ export default function App() {
 
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/vinyls" element={<VinylsPage />} />
-        <Route path="/artists" element={<ArtistsPage />} />
         <Route path="/orders" element={<OrdersPage />} />
         <Route path="/users" element={<UsersPage />} />
+        <Route path="/payments" element={<PaymentsPage />} />
 
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>

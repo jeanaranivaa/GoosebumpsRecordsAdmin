@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import usersRoutes from "./routes/users.js";
 import vinylsRoutes from "./routes/vinyls.js";
 import ordersRoutes from "./routes/orders.js";
+import paymentsRoutes from "./routes/payments.js";
 
 dotenv.config();
 
@@ -28,5 +29,6 @@ app.get("/", (req, res) => {
 app.use("/api/users", usersRoutes);
 app.use("/api/vinyls", vinylsRoutes);
 app.use("/api/orders", ordersRoutes);
+app.use("/api/payments", paymentsRoutes);
 
 export default app;
