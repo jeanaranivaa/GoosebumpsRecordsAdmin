@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-
+import axios from "axios";
 
 
 export default function VerifyCodePage() {
@@ -25,10 +25,39 @@ export default function VerifyCodePage() {
         }
     };
 
-    const handleSubmit = (e) => {
-    e.preventDefault();
-    if (code.some((d) => d === "")) return;
+    const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  if (code.some((d) => d === "")) return;
+
+  const verificationCode = code.join("");
+
+  const email = localStorage.getItem(
+    "recoveryEmail"
+  );
+
+  try {
+    await axios.post(
+      "http://localhost:4000/api/recovery/verify-code",
+      {
+        email,
+        code: verificationCode,
+      }
+    );
+
+    localStorage.setItem(
+      "verifiedRecovery",
+      "true"
+    );
+
     navigate("/newPassword");
+
+  } catch (error) {
+    alert(
+      error.response?.data?.message ||
+      "Código incorrecto"
+    );
+  }
 };
 
     return (

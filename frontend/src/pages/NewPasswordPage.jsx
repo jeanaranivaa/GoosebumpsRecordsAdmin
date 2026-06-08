@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import InputField from "../components/InputField";
+import axios from "axios";
 
 export default function NewPasswordPage() {
     const [password, setPassword] = useState("");
@@ -8,19 +9,46 @@ export default function NewPasswordPage() {
     const [error, setError] = useState("");
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (!password.trim() || !confirm.trim()) {
-            setError("Por favor completa ambos campos.");
-            return;
-        }
-        if (password !== confirm) {
-            setError("Las contraseñas no coinciden.");
-            return;
-        }
-        setError("");
+    const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!password.trim() || !confirm.trim()) {
+        setError("Por favor completa ambos campos.");
+        return;
+    }
+
+    if (password !== confirm) {
+        setError("Las contraseñas no coinciden.");
+        return;
+    }
+
+    try {
+        const email = localStorage.getItem("recoveryEmail");
+
+        await axios.put(
+            "http://localhost:4000/api/recovery/change-password",
+            {
+                email,
+                password,
+            }
+        );
+
+        localStorage.removeItem("recoveryEmail");
+        localStorage.removeItem("verifiedRecovery");
+
+        alert("Contraseña actualizada correctamente");
+
         navigate("/login");
-    };
+
+    } catch (error) {
+        console.error(error);
+
+        setError(
+            error.response?.data?.message ||
+            "Error al actualizar la contraseña"
+        );
+    }
+};
 
     return (
         <div className="h-screen bg-[#111111] flex items-center justify-center">

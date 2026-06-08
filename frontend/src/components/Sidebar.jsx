@@ -39,11 +39,6 @@ export default function Sidebar() {
       path: "/vinyls",
     },
     {
-      name: "Artistas",
-      icon: <Mic2 size={20} />,
-      path: "/artists",
-    },
-    {
       name: "Órdenes",
       icon: <ShoppingCart size={20} />,
       path: "/orders",
