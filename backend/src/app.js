@@ -6,6 +6,8 @@ import usersRoutes from "./routes/users.js";
 import vinylsRoutes from "./routes/vinyls.js";
 import ordersRoutes from "./routes/orders.js";
 import paymentsRoutes from "./routes/payments.js";
+import adminRoutes from "./routes/admin.js";
+import recoveryRoutes from "./routes/recovery.js";
 
 dotenv.config();
 
@@ -30,5 +32,7 @@ app.use("/api/users", usersRoutes);
 app.use("/api/vinyls", vinylsRoutes);
 app.use("/api/orders", ordersRoutes);
 app.use("/api/payments", paymentsRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/recovery", recoveryRoutes);
 
 export default app;
