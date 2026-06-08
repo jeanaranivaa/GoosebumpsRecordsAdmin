@@ -1,0 +1,292 @@
+import { isValidObjectId } from "mongoose";
+import ordersModel from "../models/Orders.js";
+import usersModel from "../models/Users.js";
+import vinylsModel from "../models/Vinyls.js";
+
+const ordersController = {};
+
+const validStatuses = [
+  "pending",
+  "processing",
+  "shipped",
+  "delivered",
+  "cancelled",
+];
+
+const validateStatus = (status) => {
+  return validStatuses.includes(status);
+};
+
+ordersController.getOrders = async (req, res) => {
+  try {
+    const orders = await ordersModel
+      .find()
+      .populate("userId", "fullName email phone")
+      .populate("products.vinylId", "title artist genre price coverUrl")
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json(orders);
+  } catch (error) {
+    console.log("Error al obtener órdenes:", error);
+    return res.status(500).json({
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};
+
+ordersController.getOrderById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!isValidObjectId(id)) {
+      return res.status(400).json({
+        message: "ID inválido",
+      });
+    }
+
+    const order = await ordersModel
+      .findById(id)
+      .populate("userId", "fullName email phone")
+      .populate("products.vinylId", "title artist genre price coverUrl");
+
+    if (!order) {
+      return res.status(404).json({
+        message: "Orden no encontrada",
+      });
+    }
+
+    return res.status(200).json(order);
+  } catch (error) {
+    console.log("Error al obtener orden:", error);
+    return res.status(500).json({
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};
+
+ordersController.insertOrder = async (req, res) => {
+  try {
+    let { userId, products, shippingAddress, status } = req.body;
+
+    shippingAddress = shippingAddress?.trim();
+    status = status?.trim();
+
+    if (!userId || !products || !shippingAddress) {
+      return res.status(400).json({
+        message: "Usuario, productos y dirección son obligatorios",
+      });
+    }
+
+    if (!isValidObjectId(userId)) {
+      return res.status(400).json({
+        message: "ID de usuario inválido",
+      });
+    }
+
+    const userFound = await usersModel.findById(userId);
+
+    if (!userFound) {
+      return res.status(404).json({
+        message: "Usuario no encontrado",
+      });
+    }
+
+    if (!Array.isArray(products) || products.length === 0) {
+      return res.status(400).json({
+        message: "La orden debe tener al menos un producto",
+      });
+    }
+
+    if (shippingAddress.length < 5 || shippingAddress.length > 150) {
+      return res.status(400).json({
+        message: "La dirección debe tener entre 5 y 150 caracteres",
+      });
+    }
+
+    if (status && !validateStatus(status)) {
+      return res.status(400).json({
+        message: "Estado inválido",
+      });
+    }
+
+    const productsToSave = [];
+    let total = 0;
+
+    for (const item of products) {
+      const { vinylId, quantity } = item;
+
+      if (!vinylId || !quantity) {
+        return res.status(400).json({
+          message: "Cada producto debe tener vinylId y quantity",
+        });
+      }
+
+      if (!isValidObjectId(vinylId)) {
+        return res.status(400).json({
+          message: "ID de vinilo inválido",
+        });
+      }
+
+      const quantityNumber = Number(quantity);
+
+      if (!Number.isInteger(quantityNumber) || quantityNumber <= 0) {
+        return res.status(400).json({
+          message: "La cantidad debe ser un número entero mayor a 0",
+        });
+      }
+
+      const vinylFound = await vinylsModel.findById(vinylId);
+
+      if (!vinylFound) {
+        return res.status(404).json({
+          message: "Vinilo no encontrado",
+        });
+      }
+
+      const subtotal = Number(vinylFound.price) * quantityNumber;
+      total += subtotal;
+
+      productsToSave.push({
+        vinylId: vinylFound._id,
+        title: vinylFound.title,
+        quantity: quantityNumber,
+        price: vinylFound.price,
+        subtotal,
+      });
+    }
+
+    const newOrder = new ordersModel({
+      userId,
+      products: productsToSave,
+      total,
+      status: status || "pending",
+      shippingAddress,
+    });
+
+    await newOrder.save();
+
+    return res.status(201).json({
+      message: "Orden creada correctamente",
+      order: newOrder,
+    });
+  } catch (error) {
+    console.log("Error al crear orden:", error);
+
+    if (error.name === "ValidationError") {
+      return res.status(400).json({
+        message: Object.values(error.errors)[0].message,
+      });
+    }
+
+    return res.status(500).json({
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};
+
+ordersController.updateOrder = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!isValidObjectId(id)) {
+      return res.status(400).json({
+        message: "ID inválido",
+      });
+    }
+
+    const orderFound = await ordersModel.findById(id);
+
+    if (!orderFound) {
+      return res.status(404).json({
+        message: "Orden no encontrada",
+      });
+    }
+
+    let { status, shippingAddress } = req.body;
+
+    const dataToUpdate = {};
+
+    if (status !== undefined) {
+      status = status.trim();
+
+      if (!validateStatus(status)) {
+        return res.status(400).json({
+          message: "Estado inválido",
+        });
+      }
+
+      dataToUpdate.status = status;
+    }
+
+    if (shippingAddress !== undefined) {
+      shippingAddress = shippingAddress.trim();
+
+      if (shippingAddress.length < 5 || shippingAddress.length > 150) {
+        return res.status(400).json({
+          message: "La dirección debe tener entre 5 y 150 caracteres",
+        });
+      }
+
+      dataToUpdate.shippingAddress = shippingAddress;
+    }
+
+    const orderUpdated = await ordersModel
+      .findByIdAndUpdate(id, dataToUpdate, { new: true })
+      .populate("userId", "fullName email phone")
+      .populate("products.vinylId", "title artist genre price coverUrl");
+
+    return res.status(200).json({
+      message: "Orden actualizada correctamente",
+      order: orderUpdated,
+    });
+  } catch (error) {
+    console.log("Error al actualizar orden:", error);
+
+    if (error.name === "ValidationError") {
+      return res.status(400).json({
+        message: Object.values(error.errors)[0].message,
+      });
+    }
+
+    return res.status(500).json({
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};
+
+ordersController.deleteOrder = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!isValidObjectId(id)) {
+      return res.status(400).json({
+        message: "ID inválido",
+      });
+    }
+
+    const orderDeleted = await ordersModel.findByIdAndDelete(id);
+
+    if (!orderDeleted) {
+      return res.status(404).json({
+        message: "Orden no encontrada",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Orden eliminada correctamente",
+    });
+  } catch (error) {
+    console.log("Error al eliminar orden:", error);
+
+    return res.status(500).json({
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};
+
+export default ordersController;

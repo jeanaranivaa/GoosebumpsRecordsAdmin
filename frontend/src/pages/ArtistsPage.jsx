@@ -1,6 +1,6 @@
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
-import ArtistCard from "../components/ArtistCard";
+import ArtistCard from "../components/OrdersCard";
 
 import badbunny from "../assets/artist1.png";
 import justin from "../assets/artist2.png";
