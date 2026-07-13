@@ -1,0 +1,147 @@
+/* Hero */
+.home-hero {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  padding: 54px 46px;
+  min-height: 320px;
+  display: flex;
+  align-items: center;
+}
+
+.home-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    rgba(12, 13, 21, 0.92) 0%,
+    rgba(20, 16, 45, 0.75) 45%,
+    rgba(139, 92, 246, 0.25) 100%
+  );
+}
+
+.home-hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 560px;
+}
+
+.home-hero-content h1 {
+  color: #ffffff;
+  font-size: 42px;
+  line-height: 1.08;
+  font-weight: 900;
+  margin: 0 0 16px;
+}
+
+.home-hero-content p {
+  color: #d4d7ee;
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0 0 26px;
+  max-width: 460px;
+}
+
+.home-hero-content p span {
+  color: #c084fc;
+  font-weight: 700;
+}
+
+.home-hero-actions {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.home-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(90deg, #ec4899, #d6336c);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 12px 22px;
+  border-radius: 999px;
+  transition: 0.2s ease;
+}
+
+.home-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(236, 72, 153, 0.35);
+}
+
+.home-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 12px 22px;
+  border-radius: 999px;
+  transition: 0.2s ease;
+}
+
+.home-btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+/* Sections */
+.home-section {
+  margin-top: 40px;
+}
+
+.home-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+
+.home-section-head h2 {
+  color: #ffffff;
+  font-size: 26px;
+  font-weight: 900;
+  margin: 0;
+}
+
+.home-section-head h2 span {
+  color: #ec4899;
+}
+
+.home-see-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  color: #b9bde0;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.home-see-more:hover {
+  color: #ec4899;
+}
+
+.home-empty {
+  color: #9aa0c8;
+  font-size: 15px;
+  padding: 30px 0;
+}
+
+@media (max-width: 640px) {
+  .home-hero-content h1 {
+    font-size: 30px;
+  }
+}

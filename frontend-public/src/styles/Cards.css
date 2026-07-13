@@ -1,0 +1,117 @@
+.vinyl-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 22px;
+}
+
+.vinyl-card {
+  background: #14162a;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: 0.22s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.vinyl-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(236, 72, 153, 0.4);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+}
+
+.vinyl-card-cover {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background: #0f1020;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.vinyl-card-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.vinyl-card-placeholder {
+  font-size: 46px;
+  color: #3a3f66;
+}
+
+.vinyl-card-soldout {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.75);
+  color: #ff8fab;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.vinyl-card-add {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: 50%;
+  background: #ec4899;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: 0.2s ease;
+}
+
+.vinyl-card:hover .vinyl-card-add {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.vinyl-card-add:hover {
+  background: #d6336c;
+}
+
+.vinyl-card-add:disabled {
+  background: #4a4a66;
+  cursor: not-allowed;
+}
+
+.vinyl-card-body {
+  padding: 14px 16px 18px;
+}
+
+.vinyl-card-body h4 {
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vinyl-card-body p {
+  color: #9aa0c8;
+  font-size: 13px;
+  margin: 0 0 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vinyl-card-price {
+  color: #ec4899;
+  font-size: 16px;
+  font-weight: 800;
+}

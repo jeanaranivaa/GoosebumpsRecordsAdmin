@@ -1,0 +1,252 @@
+.store-sidebar {
+  background: #1a2143;
+  min-height: 100vh;
+  width: 100%;
+  transition: 0.25s ease;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.store-sidebar-top {
+  position: relative;
+  background: #26305a;
+}
+
+.store-sidebar-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.2s ease;
+  z-index: 2;
+}
+
+.store-sidebar-close-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+  color: #ec4899;
+}
+
+.store-sidebar-user {
+  height: 186px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: 0.25s ease;
+  padding: 18px;
+}
+
+.store-sidebar-user img {
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 14px;
+  transition: 0.25s ease;
+}
+
+.store-sidebar-user h3 {
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 900;
+  margin: 0;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.store-sidebar-user p {
+  color: #c3c8ee;
+  font-size: 14px;
+  margin: 6px 0 0;
+  white-space: nowrap;
+}
+
+.store-sidebar-label {
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: 800;
+  padding: 0 14px;
+  margin-bottom: 6px;
+}
+
+.store-sidebar-menu {
+  padding: 28px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.store-sidebar-item {
+  position: relative;
+  width: 100%;
+  min-height: 48px;
+  border: none;
+  border-radius: 14px;
+  background: transparent;
+  color: #e7e9f7;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: left;
+  padding: 0 14px;
+  transition: 0.2s ease;
+}
+
+.store-sidebar-item svg {
+  min-width: 20px;
+}
+
+.store-sidebar-item:hover {
+  background: rgba(236, 72, 153, 0.1);
+  color: #ffffff;
+  transform: translateX(3px);
+}
+
+.store-sidebar-item.active {
+  color: #ec4899;
+}
+
+.store-cart-badge {
+  margin-left: auto;
+  background: #ec4899;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 800;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
+}
+
+.store-sidebar-footer {
+  padding: 18px 22px 28px;
+}
+
+.store-sidebar-logout-btn,
+.store-sidebar-login-btn {
+  width: 100%;
+  min-height: 48px;
+  border: none;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  padding: 0 14px;
+  transition: 0.2s ease;
+}
+
+.store-sidebar-logout-btn {
+  background: rgba(236, 72, 153, 0.16);
+  color: #ec4899;
+}
+
+.store-sidebar-logout-btn:hover {
+  background: rgba(236, 72, 153, 0.26);
+  transform: translateY(-1px);
+}
+
+.store-sidebar-login-btn {
+  background: rgba(139, 92, 246, 0.18);
+  color: #a78bfa;
+}
+
+.store-sidebar-login-btn:hover {
+  background: rgba(139, 92, 246, 0.28);
+  transform: translateY(-1px);
+}
+
+/* Collapsed */
+body.sidebar-collapsed .store-sidebar-close-btn {
+  display: none;
+}
+
+body.sidebar-collapsed .store-sidebar-user {
+  height: 92px;
+  padding: 16px 0;
+}
+
+body.sidebar-collapsed .store-sidebar-user img {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 0;
+}
+
+body.sidebar-collapsed .store-sidebar-user h3,
+body.sidebar-collapsed .store-sidebar-user p,
+body.sidebar-collapsed .store-sidebar-label,
+body.sidebar-collapsed .store-sidebar-item span,
+body.sidebar-collapsed .store-sidebar-logout-btn span,
+body.sidebar-collapsed .store-sidebar-login-btn span {
+  display: none;
+}
+
+body.sidebar-collapsed .store-sidebar-menu {
+  padding: 22px 14px;
+  align-items: center;
+}
+
+body.sidebar-collapsed .store-sidebar-item {
+  width: 52px;
+  height: 52px;
+  justify-content: center;
+  padding: 0;
+  gap: 0;
+}
+
+body.sidebar-collapsed .store-cart-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  margin: 0;
+  min-width: 18px;
+  height: 18px;
+  font-size: 10px;
+}
+
+body.sidebar-collapsed .store-sidebar-footer {
+  padding: 18px 14px 24px;
+}
+
+body.sidebar-collapsed .store-sidebar-logout-btn,
+body.sidebar-collapsed .store-sidebar-login-btn {
+  width: 52px;
+  height: 52px;
+  justify-content: center;
+  padding: 0;
+  gap: 0;
+}
+
+@media (max-width: 900px) {
+  .store-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 260px;
+    z-index: 9998;
+    transform: translateX(0);
+  }
+
+  body.sidebar-collapsed .store-sidebar {
+    transform: translateX(-100%);
+  }
+}

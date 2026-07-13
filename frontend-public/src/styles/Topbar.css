@@ -1,0 +1,86 @@
+.store-topbar {
+  height: 74px;
+  background: linear-gradient(90deg, #232a55 0%, #2c2c63 100%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 26px;
+}
+
+.store-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.store-topbar-menu-btn {
+  border: none;
+  background: transparent;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s ease;
+}
+
+.store-topbar-menu-btn:hover {
+  color: #ec4899;
+}
+
+.store-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  padding: 9px 18px;
+  min-width: 260px;
+  color: #b9bde0;
+}
+
+.store-search input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  font-size: 14px;
+  width: 100%;
+}
+
+.store-search input::placeholder {
+  color: #9aa0c8;
+}
+
+.store-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.store-topbar-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.store-topbar-user img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+@media (max-width: 640px) {
+  .store-search {
+    min-width: 140px;
+  }
+
+  .store-topbar-user span {
+    display: none;
+  }
+}

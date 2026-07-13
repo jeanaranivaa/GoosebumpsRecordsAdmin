@@ -1,0 +1,38 @@
+.store-page {
+  min-height: 100vh;
+  background: #0c0d15;
+}
+
+.store-wrapper {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: 100vh;
+  transition: 0.25s ease;
+}
+
+.store-main {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.store-content {
+  flex: 1;
+  padding: 26px 30px 40px;
+  background: #0c0d15;
+}
+
+body.sidebar-collapsed .store-wrapper {
+  grid-template-columns: 82px 1fr;
+}
+
+@media (max-width: 900px) {
+  .store-wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .store-content {
+    padding: 20px 16px 32px;
+  }
+}
