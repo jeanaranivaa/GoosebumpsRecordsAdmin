@@ -1,6 +1,7 @@
 import { ShoppingCart } from "lucide-react";
 import Swal from "sweetalert2";
 import { useCart } from "../context/CartContext";
+import VinylCover from "./VinylCover";
 import "../styles/Cards.css";
 
 export default function VinylCard({ vinyl, onOpen }) {
@@ -28,11 +29,7 @@ export default function VinylCard({ vinyl, onOpen }) {
   return (
     <article className="vinyl-card" onClick={() => onOpen?.(vinyl)}>
       <div className="vinyl-card-cover">
-        {vinyl.coverUrl ? (
-          <img src={vinyl.coverUrl} alt={vinyl.title} />
-        ) : (
-          <span className="vinyl-card-placeholder">♪</span>
-        )}
+        <VinylCover src={vinyl.coverUrl} alt={vinyl.title} />
 
         {isSoldOut && <span className="vinyl-card-soldout">Agotado</span>}
 

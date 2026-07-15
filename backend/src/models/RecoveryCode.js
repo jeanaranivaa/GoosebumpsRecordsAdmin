@@ -5,7 +5,13 @@ const recoveryCodeSchema = new Schema(
     adminId: {
       type: Schema.Types.ObjectId,
       ref: "Admin",
-      required: true,
+      required: false,
+    },
+
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: "Users",
+      required: false,
     },
 
     code: {

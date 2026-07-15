@@ -8,14 +8,22 @@ import ordersRoutes from "./routes/orders.js";
 import paymentsRoutes from "./routes/payments.js";
 import adminRoutes from "./routes/admin.js";
 import recoveryRoutes from "./routes/recovery.js";
+import customersRoutes from "./routes/customers.js";
+import customerRecoveryRoutes from "./routes/customerRecovery.js";
 
 dotenv.config();
 
 const app = express();
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "http://localhost:5175",
+];
+
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: allowedOrigins,
     credentials: true,
   })
 );
@@ -34,5 +42,7 @@ app.use("/api/orders", ordersRoutes);
 app.use("/api/payments", paymentsRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/recovery", recoveryRoutes);
+app.use("/api/customers", customersRoutes);
+app.use("/api/customer-recovery", customerRecoveryRoutes);
 
 export default app;

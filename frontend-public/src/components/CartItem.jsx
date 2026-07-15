@@ -1,5 +1,6 @@
 import { Minus, Plus } from "lucide-react";
 import { useCart } from "../context/CartContext";
+import VinylCover from "./VinylCover";
 
 export default function CartItem({ item }) {
   const { updateQuantity, removeItem } = useCart();
@@ -7,11 +8,7 @@ export default function CartItem({ item }) {
   return (
     <div className="cart-item">
       <div className="cart-item-cover">
-        {item.coverUrl ? (
-          <img src={item.coverUrl} alt={item.title} />
-        ) : (
-          <span className="vinyl-card-placeholder">♪</span>
-        )}
+        <VinylCover src={item.coverUrl} alt={item.title} />
       </div>
 
       <div className="cart-item-info">

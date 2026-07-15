@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { X, Minus, Plus, ShoppingCart } from "lucide-react";
 import { useCart } from "../context/CartContext";
+import VinylCover from "./VinylCover";
 import "../styles/Modal.css";
 
 export default function VinylModal({ vinyl, onClose }) {
@@ -32,11 +33,7 @@ export default function VinylModal({ vinyl, onClose }) {
 
         <div className="modal-body">
           <div className="modal-cover">
-            {vinyl.coverUrl ? (
-              <img src={vinyl.coverUrl} alt={vinyl.title} />
-            ) : (
-              <span className="vinyl-card-placeholder">♪</span>
-            )}
+            <VinylCover src={vinyl.coverUrl} alt={vinyl.title} />
           </div>
 
           <div className="modal-info">
