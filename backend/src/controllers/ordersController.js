@@ -17,6 +17,163 @@ const validateStatus = (status) => {
   return validStatuses.includes(status);
 };
 
+const MONTHS_IN_CHART = 6;
+
+const MONTH_LABELS = [
+  "Ene", "Feb", "Mar", "Abr", "May", "Jun",
+  "Jul", "Ago", "Sep", "Oct", "Nov", "Dic",
+];
+
+// Los géneros vienen con mayúsculas inconsistentes ("Rock" y "rock"),
+// así que se agrupan en minúscula y se rotula al mostrarlos.
+const toTitleCase = (text) =>
+  text
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+
+const buildRangeStart = (range) => {
+  const now = new Date();
+
+  if (range === "week") {
+    const start = new Date(now);
+    start.setDate(start.getDate() - 7);
+    return start;
+  }
+
+  if (range === "month") {
+    const start = new Date(now);
+    start.setMonth(start.getMonth() - 1);
+    return start;
+  }
+
+  return null;
+};
+
+// Métricas del dashboard calculadas desde las órdenes reales
+ordersController.getStats = async (req, res) => {
+  try {
+    const range = ["week", "month", "all"].includes(req.query.range)
+      ? req.query.range
+      : "all";
+
+    const rangeStart = buildRangeStart(range);
+
+    // orderDate falta en las órdenes sembradas; createdAt es el respaldo
+    const withDate = {
+      $addFields: {
+        effectiveDate: { $ifNull: ["$orderDate", "$createdAt"] },
+      },
+    };
+
+    const notCancelled = { $match: { status: { $ne: "cancelled" } } };
+
+    const rangeMatch = rangeStart
+      ? [{ $match: { effectiveDate: { $gte: rangeStart } } }]
+      : [];
+
+    const [totals] = await ordersModel.aggregate([
+      notCancelled,
+      withDate,
+      ...rangeMatch,
+      {
+        $group: {
+          _id: null,
+          totalRevenue: { $sum: "$total" },
+          totalOrders: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const byGenre = await ordersModel.aggregate([
+      notCancelled,
+      withDate,
+      ...rangeMatch,
+      { $unwind: "$products" },
+      {
+        $lookup: {
+          from: "Vinyls",
+          localField: "products.vinylId",
+          foreignField: "_id",
+          as: "vinyl",
+        },
+      },
+      // Deja fuera las líneas de vinilos ya eliminados del catálogo
+      { $unwind: "$vinyl" },
+      {
+        $group: {
+          _id: { $toLower: "$vinyl.genre" },
+          unitsSold: { $sum: "$products.quantity" },
+          revenue: { $sum: "$products.subtotal" },
+        },
+      },
+      { $sort: { unitsSold: -1 } },
+    ]);
+
+    const monthsStart = new Date();
+    monthsStart.setMonth(monthsStart.getMonth() - (MONTHS_IN_CHART - 1));
+    monthsStart.setDate(1);
+    monthsStart.setHours(0, 0, 0, 0);
+
+    const monthly = await ordersModel.aggregate([
+      notCancelled,
+      withDate,
+      { $match: { effectiveDate: { $gte: monthsStart } } },
+      {
+        $group: {
+          _id: {
+            year: { $year: "$effectiveDate" },
+            month: { $month: "$effectiveDate" },
+          },
+          revenue: { $sum: "$total" },
+          orders: { $sum: 1 },
+        },
+      },
+    ]);
+
+    // Rellena los meses sin ventas para que la gráfica no tenga huecos
+    const byMonth = [];
+
+    for (let i = 0; i < MONTHS_IN_CHART; i++) {
+      const cursor = new Date(monthsStart);
+      cursor.setMonth(cursor.getMonth() + i);
+
+      const year = cursor.getFullYear();
+      const month = cursor.getMonth() + 1;
+
+      const found = monthly.find(
+        (item) => item._id.year === year && item._id.month === month
+      );
+
+      byMonth.push({
+        label: MONTH_LABELS[month - 1],
+        year,
+        month,
+        revenue: found ? Number(found.revenue.toFixed(2)) : 0,
+        orders: found ? found.orders : 0,
+      });
+    }
+
+    return res.status(200).json({
+      range,
+      totalRevenue: Number((totals?.totalRevenue || 0).toFixed(2)),
+      totalOrders: totals?.totalOrders || 0,
+      byGenre: byGenre.map((item) => ({
+        genre: toTitleCase(item._id || "sin género"),
+        unitsSold: item.unitsSold,
+        revenue: Number(item.revenue.toFixed(2)),
+      })),
+      byMonth,
+    });
+  } catch (error) {
+    console.log("Error al obtener estadísticas:", error);
+    return res.status(500).json({
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};
+
 ordersController.getOrders = async (req, res) => {
   try {
     const orders = await ordersModel
@@ -28,6 +185,32 @@ ordersController.getOrders = async (req, res) => {
     return res.status(200).json(orders);
   } catch (error) {
     console.log("Error al obtener órdenes:", error);
+    return res.status(500).json({
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};
+
+// Historial de pedidos de un cliente
+ordersController.getOrdersByUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    if (!isValidObjectId(userId)) {
+      return res.status(400).json({
+        message: "ID de usuario inválido",
+      });
+    }
+
+    const orders = await ordersModel
+      .find({ userId })
+      .populate("products.vinylId", "title artist coverUrl")
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json(orders);
+  } catch (error) {
+    console.log("Error al obtener órdenes del usuario:", error);
     return res.status(500).json({
       message: "Internal Server Error",
       error: error.message,
@@ -90,6 +273,12 @@ ordersController.insertOrder = async (req, res) => {
     if (!userFound) {
       return res.status(404).json({
         message: "Usuario no encontrado",
+      });
+    }
+
+    if (userFound.verified === false) {
+      return res.status(403).json({
+        message: "Debes confirmar tu cuenta antes de comprar",
       });
     }
 

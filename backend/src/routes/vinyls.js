@@ -9,6 +9,9 @@ router
   .get(vinylsController.getVinyls)
   .post(uploadVinyl.single("cover"), vinylsController.insertVinyl);
 
+// Debe ir antes de "/:id" para que no se interprete como un ID
+router.route("/popular").get(vinylsController.getPopularVinyls);
+
 router
   .route("/:id")
   .get(vinylsController.getVinylById)

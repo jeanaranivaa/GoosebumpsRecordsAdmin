@@ -162,16 +162,6 @@ export default function LoginForm() {
 
             <GoogleButton />
 
-            <p className="text-center text-zinc-500 text-xs mt-1">
-                ¿No tienes una cuenta?{" "}
-                <Link
-                    to="/signup"
-                    className="text-blue-400 hover:text-blue-300 transition-colors"
-                >
-                    Registrarse
-                </Link>
-            </p>
-
         </form>
     );
 }

@@ -1,3 +1,4 @@
+import { useEffect, useMemo, useState } from "react";
 import {
   BarChart,
   Bar,
@@ -15,42 +16,110 @@ import Topbar from "../components/Topbar";
 import DashboardCard from "../components/DashboardCard";
 import AlbumCard from "../components/AlbumCard";
 
-import album1 from "../assets/album1.jpg";
-import album2 from "../assets/album2.png";
-import album3 from "../assets/album3.jpg";
-import album4 from "../assets/album4.png";
-import album5 from "../assets/album5.png";
-import album6 from "../assets/album6.jpg";
-
 import "../styles/Dashboard.css";
 
-const pieData = [
-  { name: "Pop", value: 50 },
-  { name: "Trap", value: 35 },
-  { name: "Rock", value: 15 },
+const POPULAR_URL = "http://localhost:4000/api/vinyls/popular?limit=6";
+const STATS_URL = "http://localhost:4000/api/orders/stats";
+
+const GENRE_COLORS = [
+  "#7b8cff",
+  "#ef5da8",
+  "#b45cff",
+  "#5ad1e6",
+  "#ffb84d",
+  "#6ee7a8",
 ];
 
-const barData = [
-  { name: "Q1", value: 20 },
-  { name: "Q2", value: 45 },
-  { name: "Q3", value: 60 },
-  { name: "Q4", value: 35 },
-  { name: "Q5", value: 55 },
-  { name: "Q6", value: 30 },
-  { name: "Q7", value: 48 },
-  { name: "Q8", value: 70 },
-];
-
-const albums = [
-  { image: album4, title: "Debí Tirar Más Fotos", artist: "Bad Bunny" },
-  { image: album6, title: "Por Si Mañana No Estoy", artist: "Omar Courtz" },
-  { image: album5, title: "Vice Versa", artist: "Rauw Alejandro" },
-  { image: album2, title: "Justice", artist: "Justin Bieber" },
-  { image: album3, title: "Wings", artist: "BTS" },
-  { image: album1, title: "Un Verano Sin Ti", artist: "Bad Bunny" },
-];
+const formatMoney = (value) =>
+  `$${Number(value || 0).toLocaleString("es-SV", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}`;
 
 export default function DashboardPage() {
+  const [popular, setPopular] = useState([]);
+  const [loadingPopular, setLoadingPopular] = useState(true);
+  const [popularError, setPopularError] = useState("");
+
+  const [stats, setStats] = useState(null);
+  const [loadingStats, setLoadingStats] = useState(true);
+  const [statsError, setStatsError] = useState("");
+  const [range, setRange] = useState("all");
+
+  useEffect(() => {
+    const getStats = async () => {
+      try {
+        setLoadingStats(true);
+        setStatsError("");
+
+        const response = await fetch(`${STATS_URL}?range=${range}`);
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || "Error al cargar estadísticas");
+        }
+
+        setStats(data);
+      } catch (error) {
+        console.log("Error al cargar estadísticas:", error);
+        setStatsError("No se pudieron cargar las estadísticas");
+      } finally {
+        setLoadingStats(false);
+      }
+    };
+
+    getStats();
+  }, [range]);
+
+  useEffect(() => {
+    const getPopular = async () => {
+      try {
+        setLoadingPopular(true);
+        setPopularError("");
+
+        const response = await fetch(POPULAR_URL);
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || "Error al cargar vinilos populares");
+        }
+
+        setPopular(data);
+      } catch (error) {
+        console.log("Error al cargar vinilos populares:", error);
+        setPopularError("No se pudieron cargar los vinilos más populares");
+      } finally {
+        setLoadingPopular(false);
+      }
+    };
+
+    getPopular();
+  }, []);
+
+  const genreData = useMemo(
+    () =>
+      (stats?.byGenre || []).map((item) => ({
+        name: item.genre,
+        value: item.unitsSold,
+      })),
+    [stats]
+  );
+
+  const monthData = useMemo(
+    () =>
+      (stats?.byMonth || []).map((item) => ({
+        name: item.label,
+        value: item.revenue,
+      })),
+    [stats]
+  );
+
+  const monthlyRevenue = useMemo(
+    () =>
+      (stats?.byMonth || []).reduce((total, item) => total + item.revenue, 0),
+    [stats]
+  );
+
   return (
     <main className="dashboard-page">
       <div className="dashboard-wrapper">
@@ -66,52 +135,106 @@ export default function DashboardPage() {
             </div>
 
             <div className="charts-grid">
-              <DashboardCard title="CHART TITLE" value="5.000,00" subtitle="50 Orders">
-                <ResponsiveContainer width="100%" height={180}>
-                  <PieChart>
-                    <Pie
-                      data={pieData}
-                      dataKey="value"
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={42}
-                      outerRadius={70}
-                    >
-                      <Cell fill="#7b8cff" />
-                      <Cell fill="#ef5da8" />
-                      <Cell fill="#b45cff" />
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
+              <DashboardCard
+                title="VENTAS POR GÉNERO"
+                value={formatMoney(stats?.totalRevenue)}
+                subtitle={`${stats?.totalOrders || 0} ${
+                  stats?.totalOrders === 1 ? "orden" : "órdenes"
+                }`}
+                range={range}
+                onRangeChange={setRange}
+              >
+                {loadingStats && <p>Cargando...</p>}
+
+                {statsError && <p className="dashboard-error">{statsError}</p>}
+
+                {!loadingStats && !statsError && (
+                  genreData.length === 0 ? (
+                    <p>Sin ventas en este período.</p>
+                  ) : (
+                    <ResponsiveContainer width="100%" height={180}>
+                      <PieChart>
+                        <Pie
+                          data={genreData}
+                          dataKey="value"
+                          nameKey="name"
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={42}
+                          outerRadius={70}
+                        >
+                          {genreData.map((genre, index) => (
+                            <Cell
+                              key={genre.name}
+                              fill={GENRE_COLORS[index % GENRE_COLORS.length]}
+                            />
+                          ))}
+                        </Pie>
+                        <Tooltip
+                          formatter={(value, name) => [
+                            `${value} ${value === 1 ? "unidad" : "unidades"}`,
+                            name,
+                          ]}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  )
+                )}
               </DashboardCard>
 
-              <DashboardCard title="CHART TITLE" value="5.000,00" subtitle="50 Orders">
-                <ResponsiveContainer width="100%" height={180}>
-                  <BarChart data={barData}>
-                    <XAxis dataKey="name" stroke="#9ca3ff" />
-                    <YAxis stroke="#9ca3ff" />
-                    <Tooltip />
-                    <Bar dataKey="value" fill="#8c9cff" radius={[4, 4, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
+              <DashboardCard
+                title="INGRESOS POR MES"
+                value={formatMoney(monthlyRevenue)}
+                subtitle="Últimos 6 meses"
+              >
+                {loadingStats && <p>Cargando...</p>}
+
+                {statsError && <p className="dashboard-error">{statsError}</p>}
+
+                {!loadingStats && !statsError && (
+                  <ResponsiveContainer width="100%" height={180}>
+                    <BarChart data={monthData}>
+                      <XAxis dataKey="name" stroke="#9ca3ff" />
+                      <YAxis stroke="#9ca3ff" />
+                      <Tooltip
+                        formatter={(value) => [formatMoney(value), "Ingresos"]}
+                      />
+                      <Bar
+                        dataKey="value"
+                        fill="#8c9cff"
+                        radius={[4, 4, 0, 0]}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                )}
               </DashboardCard>
             </div>
 
             <section className="albums-section">
               <h2>Vinilos Más Populares</h2>
-              <p>Vinilos más vendidos de la semana</p>
+              <p>Vinilos más vendidos según las órdenes registradas</p>
 
-              <div className="albums-grid">
-                {albums.map((album) => (
-                  <AlbumCard
-                    key={album.title}
-                    image={album.image}
-                    title={album.title}
-                    artist={album.artist}
-                  />
-                ))}
-              </div>
+              {loadingPopular && <p>Cargando vinilos populares...</p>}
+
+              {popularError && <p className="dashboard-error">{popularError}</p>}
+
+              {!loadingPopular && !popularError && (
+                popular.length === 0 ? (
+                  <p>Aún no hay ventas para calcular los más populares.</p>
+                ) : (
+                  <div className="albums-grid">
+                    {popular.map((vinyl) => (
+                      <AlbumCard
+                        key={vinyl._id}
+                        image={vinyl.coverUrl}
+                        title={vinyl.title}
+                        artist={vinyl.artist}
+                        unitsSold={vinyl.unitsSold}
+                      />
+                    ))}
+                  </div>
+                )
+              )}
             </section>
           </div>
         </section>

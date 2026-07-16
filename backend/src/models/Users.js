@@ -55,6 +55,11 @@ const usersSchema = new Schema(
       enum: ["active", "inactive"],
       default: "active",
     },
+
+    verified: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

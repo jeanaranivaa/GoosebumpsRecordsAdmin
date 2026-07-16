@@ -23,6 +23,16 @@ export default function LoginForm() {
             await login(email, password);
             navigate("/home");
         } catch (error) {
+            // Cuenta sin confirmar: se redirige al flujo de verificación
+            if (error.response?.data?.needsVerification) {
+                localStorage.setItem(
+                    "pendingVerificationEmail",
+                    error.response.data.email
+                );
+                navigate("/verify-account");
+                return;
+            }
+
             alert(
                 error.response?.data?.message ||
                 "Error al iniciar sesión"

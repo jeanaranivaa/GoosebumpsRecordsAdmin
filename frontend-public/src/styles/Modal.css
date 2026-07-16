@@ -215,3 +215,132 @@
     aspect-ratio: 16 / 10;
   }
 }
+
+/* ===== Valoraciones ===== */
+.modal-reviews {
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.modal-reviews-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.modal-reviews-head h3 {
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.modal-reviews-avg {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #b9bce0;
+  font-size: 12px;
+}
+
+.review-stars {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.review-stars .star {
+  color: #4a4a66;
+}
+
+.review-stars .star.filled {
+  color: #facc15;
+  fill: #facc15;
+}
+
+.modal-reviews-list {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  max-height: 160px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal-reviews-list li {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.modal-reviews-list li p {
+  color: #c9cbe8;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.modal-review-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: #ffffff;
+  font-size: 12px;
+}
+
+.modal-review-form {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.modal-review-form textarea {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  color: #ffffff;
+  font-size: 12px;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.modal-review-form button {
+  align-self: flex-end;
+  background: rgba(236, 72, 153, 0.15);
+  border: 1px solid rgba(236, 72, 153, 0.5);
+  border-radius: 8px;
+  color: #ec4899;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 7px 14px;
+  transition: 0.2s ease;
+}
+
+.modal-review-form button:hover:not(:disabled) {
+  background: rgba(236, 72, 153, 0.3);
+}
+
+.modal-review-form button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.review-ok {
+  color: #6ee7a8;
+  font-size: 12px;
+}
+
+.review-bad {
+  color: #f87171;
+  font-size: 12px;
+}
+
+.modal-reviews-login {
+  margin-top: 10px;
+  color: #8a8db3;
+  font-size: 12px;
+}

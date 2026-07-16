@@ -1,6 +1,13 @@
 import "../styles/Cards.css";
 
-export default function DashboardCard({ title, value, subtitle, children }) {
+export default function DashboardCard({
+  title,
+  value,
+  subtitle,
+  range,
+  onRangeChange,
+  children,
+}) {
   return (
     <div className="dashboard-card">
       <div className="card-header">
@@ -10,10 +17,16 @@ export default function DashboardCard({ title, value, subtitle, children }) {
           <span>{subtitle}</span>
         </div>
 
-        <select>
-          <option>This Week</option>
-          <option>This Month</option>
-        </select>
+        {onRangeChange && (
+          <select
+            value={range}
+            onChange={(e) => onRangeChange(e.target.value)}
+          >
+            <option value="all">Todo</option>
+            <option value="month">Último mes</option>
+            <option value="week">Última semana</option>
+          </select>
+        )}
       </div>
 
       <div className="card-content">{children}</div>

@@ -28,12 +28,22 @@ export function AuthProvider({ children }) {
     [persistSession]
   );
 
-  const register = useCallback(
-    async ({ fullName, email, password }) => {
-      const res = await apiClient.post("/customers/register", {
-        fullName,
+  // El registro ya no inicia sesión: la cuenta debe confirmarse por correo
+  const register = useCallback(async ({ fullName, email, password }) => {
+    const res = await apiClient.post("/customers/register", {
+      fullName,
+      email,
+      password,
+    });
+
+    return res.data;
+  }, []);
+
+  const verifyAccount = useCallback(
+    async (email, code) => {
+      const res = await apiClient.post("/customers/verify-account", {
         email,
-        password,
+        code,
       });
 
       persistSession(res.data.token, res.data.user);
@@ -41,6 +51,14 @@ export function AuthProvider({ children }) {
     },
     [persistSession]
   );
+
+  const resendVerification = useCallback(async (email) => {
+    const res = await apiClient.post("/customers/resend-verification", {
+      email,
+    });
+
+    return res.data;
+  }, []);
 
   const logout = useCallback(() => {
     localStorage.removeItem("token");
@@ -55,6 +73,8 @@ export function AuthProvider({ children }) {
         isAuthenticated: !!user,
         login,
         register,
+        verifyAccount,
+        resendVerification,
         logout,
       }}
     >

@@ -57,6 +57,11 @@
   gap: 30px;
 }
 
+.dashboard-error {
+  font-size: 12px;
+  color: #ef5da8;
+}
+
 /* =========================
    ALBUMS SECTION
 ========================= */

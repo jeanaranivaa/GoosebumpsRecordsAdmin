@@ -40,7 +40,10 @@ export default function SignUpForm() {
     try {
       setLoading(true);
       await register({ fullName, email, password });
-      navigate("/home");
+
+      // La cuenta queda pendiente de confirmación por correo
+      localStorage.setItem("pendingVerificationEmail", email.trim().toLowerCase());
+      navigate("/verify-account");
     } catch (err) {
       setError(
         err.response?.data?.message || "Error al crear la cuenta"

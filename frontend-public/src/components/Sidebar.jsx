@@ -1,4 +1,4 @@
-import { Disc3, LayoutGrid, ShoppingCart, X, LogOut, LogIn } from "lucide-react";
+import { Disc3, LayoutGrid, ShoppingCart, Package, X, LogOut, LogIn } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
@@ -24,6 +24,7 @@ export default function Sidebar() {
     { name: "Inicio", icon: <Disc3 size={20} />, path: "/home" },
     { name: "Categorías", icon: <LayoutGrid size={20} />, path: "/categories" },
     { name: "Carrito", icon: <ShoppingCart size={20} />, path: "/cart" },
+    { name: "Mis Pedidos", icon: <Package size={20} />, path: "/my-orders" },
   ];
 
   return (

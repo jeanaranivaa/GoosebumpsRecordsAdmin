@@ -5,15 +5,19 @@ import StoreLayout from "../components/StoreLayout";
 import VinylCard from "../components/VinylCard";
 import VinylModal from "../components/VinylModal";
 import { useVinyls } from "../hooks/vinyls/useVinyls";
+import { usePopularVinyls } from "../hooks/vinyls/usePopularVinyls";
 import heroImg from "../assets/hero.png";
 import "../styles/Home.css";
 
 export default function HomePage() {
   const { vinyls, loading } = useVinyls();
+  const { popular, loading: loadingPopular } = usePopularVinyls(6);
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState(null);
 
   const navigate = useNavigate();
+
+  const isSearching = search.trim().length > 0;
 
   const filtered = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -27,6 +31,10 @@ export default function HomePage() {
         v.genre?.toLowerCase().includes(query)
     );
   }, [vinyls, search]);
+
+  // Sin búsqueda se muestra el top de ventas; al buscar, todo el catálogo
+  const displayed = isSearching ? filtered : popular;
+  const isLoading = isSearching ? loading : loadingPopular;
 
   return (
     <StoreLayout search={search} onSearch={setSearch}>
@@ -72,7 +80,11 @@ export default function HomePage() {
       <section id="popular" className="home-section">
         <div className="home-section-head">
           <h2>
-            Vinilos <span>Más Populares</span>
+            {isSearching ? (
+              <>Resultados de <span>búsqueda</span></>
+            ) : (
+              <>Vinilos <span>Más Populares</span></>
+            )}
           </h2>
           <button
             className="home-see-more"
@@ -82,15 +94,17 @@ export default function HomePage() {
           </button>
         </div>
 
-        {loading ? (
+        {isLoading ? (
           <p className="home-empty">Cargando vinilos...</p>
-        ) : filtered.length === 0 ? (
+        ) : displayed.length === 0 ? (
           <p className="home-empty">
-            No se encontraron vinilos{search ? ` para "${search}"` : ""}.
+            {isSearching
+              ? `No se encontraron vinilos para "${search}".`
+              : "Aún no hay ventas para calcular los más populares."}
           </p>
         ) : (
           <div className="vinyl-grid">
-            {filtered.map((vinyl) => (
+            {displayed.map((vinyl) => (
               <VinylCard
                 key={vinyl._id}
                 vinyl={vinyl}

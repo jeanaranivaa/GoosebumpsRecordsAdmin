@@ -68,3 +68,11 @@
   color: #d6daf6;
   margin-top: 4px;
 }
+
+.album-card-sold {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  color: #8c9cff;
+  margin-top: 6px;
+}

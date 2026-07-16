@@ -10,6 +10,7 @@ import adminRoutes from "./routes/admin.js";
 import recoveryRoutes from "./routes/recovery.js";
 import customersRoutes from "./routes/customers.js";
 import customerRecoveryRoutes from "./routes/customerRecovery.js";
+import reviewsRoutes from "./routes/reviews.js";
 
 dotenv.config();
 
@@ -44,5 +45,6 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/recovery", recoveryRoutes);
 app.use("/api/customers", customersRoutes);
 app.use("/api/customer-recovery", customerRecoveryRoutes);
+app.use("/api/reviews", reviewsRoutes);
 
 export default app;

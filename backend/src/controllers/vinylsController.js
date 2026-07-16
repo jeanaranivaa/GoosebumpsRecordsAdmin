@@ -1,8 +1,12 @@
 import { isValidObjectId } from "mongoose";
 import vinylsModel from "../models/Vinyls.js";
+import ordersModel from "../models/Orders.js";
 import { cloudinary } from "../utils/cloudinaryVinylsConfig.js";
 
 const vinylsController = {};
+
+const DEFAULT_POPULAR_LIMIT = 6;
+const MAX_POPULAR_LIMIT = 50;
 
 const deleteUploadedImage = async (file) => {
   if (file?.filename) {
@@ -21,6 +25,65 @@ vinylsController.getVinyls = async (req, res) => {
     return res.status(200).json(vinyls);
   } catch (error) {
     console.log("Error al obtener vinilos:", error);
+    return res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+};
+
+// Vinilos más vendidos, calculados desde las órdenes no canceladas
+vinylsController.getPopularVinyls = async (req, res) => {
+  try {
+    const requestedLimit = Number(req.query.limit);
+
+    const limit =
+      Number.isInteger(requestedLimit) && requestedLimit > 0
+        ? Math.min(requestedLimit, MAX_POPULAR_LIMIT)
+        : DEFAULT_POPULAR_LIMIT;
+
+    const popular = await ordersModel.aggregate([
+      { $match: { status: { $ne: "cancelled" } } },
+      { $unwind: "$products" },
+      {
+        $group: {
+          _id: "$products.vinylId",
+          unitsSold: { $sum: "$products.quantity" },
+          revenue: { $sum: "$products.subtotal" },
+        },
+      },
+      { $sort: { unitsSold: -1, revenue: -1 } },
+      {
+        $lookup: {
+          from: "Vinyls",
+          localField: "_id",
+          foreignField: "_id",
+          as: "vinyl",
+        },
+      },
+      // Descarta vinilos vendidos que ya fueron eliminados del catálogo.
+      // Va antes del $limit para que un borrado no consuma un puesto del top.
+      { $unwind: "$vinyl" },
+      { $limit: limit },
+      {
+        $project: {
+          _id: "$vinyl._id",
+          title: "$vinyl.title",
+          artist: "$vinyl.artist",
+          genre: "$vinyl.genre",
+          price: "$vinyl.price",
+          stock: "$vinyl.stock",
+          description: "$vinyl.description",
+          coverUrl: "$vinyl.coverUrl",
+          status: "$vinyl.status",
+          unitsSold: 1,
+          revenue: 1,
+        },
+      },
+    ]);
+
+    return res.status(200).json(popular);
+  } catch (error) {
+    console.log("Error al obtener vinilos populares:", error);
     return res.status(500).json({
       message: "Internal Server Error",
     });
