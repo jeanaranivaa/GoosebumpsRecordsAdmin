@@ -1,0 +1,46 @@
+{
+  "expo": {
+    "name": "Goosebumps Records",
+    "slug": "goosebumps-records",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "goosebumps",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#0c0d15",
+    "primaryColor": "#ec4899",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0c0d15"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "sv.edu.ricaldone.goosebumpsrecords"
+    },
+    "android": {
+      "package": "sv.edu.ricaldone.goosebumpsrecords",
+      "adaptiveIcon": {
+        "backgroundColor": "#0c0d15",
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "edgeToEdgeEnabled": true
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 220,
+          "resizeMode": "contain",
+          "backgroundColor": "#0c0d15"
+        }
+      ],
+      "expo-font"
+    ]
+  }
+}
